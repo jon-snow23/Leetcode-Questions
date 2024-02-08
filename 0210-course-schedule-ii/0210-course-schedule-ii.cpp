@@ -1,37 +1,40 @@
 class Solution {
 public:
-    vector<int> findOrder(int numCourses, vector<vector<int>>& prerequisites) {
-        vector<vector<int>> adjacencylist(numCourses);
-        vector<int> inDegree(numCourses, 0);
-        for (int i = 0; i < prerequisites.size(); i++)
-        {
-            int source = prerequisites[i][1];
-            int neighbour = prerequisites[i][0];
-            adjacencylist[source].push_back(neighbour);
-            inDegree[neighbour]++;
+    vector<int> findOrder(int n, vector<vector<int>>& prerequisites) {
+         vector<int> adj[n];
+        for (int i = 0; i < prerequisites.size(); i++) {
+            adj[prerequisites[i][1]].push_back(prerequisites[i][0]);
         }
-        queue<int> sources;
-        for (int i = 0; i < inDegree.size(); i++)
-        {
-            if (inDegree[i] == 0)
-                sources.push(i);
-        }
-        vector<int> topoSort;
-        while (!sources.empty())
-        {
-            int source = sources.front();
-            topoSort.push_back(source);
-            sources.pop();
-            for (int neighbour : adjacencylist[source])
-            {
-                inDegree[neighbour] -= 1;
-                if (inDegree[neighbour] == 0)
-                    sources.push(neighbour);
+
+        vector<int>indegree(n,0);
+        for (int i = 0; i < n; i++) {
+            for (auto it : adj[i]) {
+                indegree[it]++;
             }
         }
-        // THERE IS A CYCLE
-        if (topoSort.size() != numCourses)
-            return {};
-        return topoSort;
+
+        queue<int> q;
+        for (int i = 0; i < n; i++) {
+            if (indegree[i] == 0) q.push(i);
+        }
+
+        vector<int>ans;
+        int count = 0 ;
+        while (!q.empty()) {
+            int node = q.front();
+            q.pop();
+            count++;
+            ans.push_back(node);
+            for (auto it : adj[node]) {
+                indegree[it]--;
+                if (indegree[it] == 0) q.push(it);
+            }
+        }
+
+        if (count == n) {
+            return ans;
+        }
+        vector<int>an2;
+        return an2;
     }
 };
