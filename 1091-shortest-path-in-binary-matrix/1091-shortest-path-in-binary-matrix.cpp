@@ -1,24 +1,41 @@
 class Solution {
 public:
-    int shortestPathBinaryMatrix(vector<vector<int>>& g, int steps = 0) {
-  queue<pair<int, int>> q;
-  q.push({ 0, 0 });
-  while (!q.empty()) {
-    ++steps;
-    queue<pair<int, int>> q1;
-    while (!q.empty()) {
-      auto c = q.front();
-      q.pop();
-      if (c.first >= 0 && c.second >= 0 && c.first < g.size() && c.second < g.size() && !g[c.first][c.second]) {
-        g[c.first][c.second] = 1;
-        if (c.first == g.size() - 1 && c.second == g.size() - 1) return steps;
-        for (auto i = -1; i < 2; ++i)
-          for (auto j = -1; j < 2; ++j)
-            if (i != 0 || j != 0) q1.push({ c.first + i, c.second + j });
-      }
+    int shortestPathBinaryMatrix(vector<vector<int>>& grid) {
+        int n = grid.size();
+        int m = grid[0].size();
+        if (grid[0][0] == 1 || grid[n-1][m-1] == 1) return -1;
+        
+        queue<pair<int, pair<int, int>>> q;
+        vector<vector<bool>> visited(n, vector<bool>(m, false));
+        
+        q.push({0, {0, 0}});
+        visited[0][0] = true;
+        
+        while (!q.empty()) {
+            auto it = q.front();
+            q.pop();
+            int dis = it.first;
+            int row = it.second.first;
+            int col = it.second.second;
+            
+            if (row == n - 1 && col == m - 1)
+                return dis + 1;
+            
+            int dr[] = {-1, -1, 0, 1, 1, 1, 0, -1};
+            int dc[] = {0, 1, 1, 1, 0, -1, -1, -1};
+            
+            for (int i = 0; i < 8; i++) {
+                int newR = dr[i] + row;
+                int newC = dc[i] + col;
+                
+                if (newR >= 0 && newR < n && newC >= 0 && newC < m &&
+                    grid[newR][newC] == 0 && !visited[newR][newC]) {
+                    q.push({dis + 1, {newR, newC}});
+                    visited[newR][newC] = true;
+                }
+            }
+        }
+        
+        return -1;
     }
-    swap(q, q1);
-  }
-  return -1;
-}
 };
