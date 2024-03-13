@@ -1,20 +1,20 @@
 class Solution {
-public:
-    int solve(vector<int> &nums, int &ans, int sum, int i, vector<int> &dp){
-        if(i >= nums.size()) return 0;
-
-        if(dp[i] != -1) return dp[i];
-
-        int t = max(solve(nums, ans, sum, i+2, dp)+nums[i], solve(nums, ans, sum, i+1, dp));
-        //cout<<t<<endl;
-        return dp[i] = t;
-    }
-
-    int rob(vector<int>& nums) {
-        int ans = 0;
-        vector<int> dp(nums.size()+1, -1);
-        ans = max(ans, solve(nums, ans, 0, 0, dp));
+    private :
+    
+    int find(int ind  , vector<int>&nums , vector<int>&dp) {
+        if(ind<0) return 0;
+        if(dp[ind]!=-1) return dp[ind];
+        int pick =nums[ind] + find(ind-2 , nums , dp);
+        int unpick = 0 + find(ind-1 , nums , dp);
         
-        return ans;  
+         dp[ind] = max(pick , unpick);
+        return dp[ind];
+        
+    }
+public:
+    int rob(vector<int>& nums) {
+        int n = nums.size();
+        vector<int>dp(n , -1);
+        return find(n-1,nums,dp);
     }
 };
