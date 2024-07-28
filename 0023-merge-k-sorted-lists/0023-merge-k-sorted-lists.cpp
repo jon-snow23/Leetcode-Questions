@@ -11,11 +11,10 @@
 class Solution {
 public:
     ListNode* mergeTwoLists(ListNode* l1, ListNode* l2) {
-    ListNode* dummy = new ListNode(0);
+    ListNode* dummy = new ListNode(-1);
     ListNode* current = dummy;
-    
     while (l1 && l2) {
-        if (l1->val < l2->val) {
+        if (l1->val <= l2->val) {
             current->next = l1;
             l1 = l1->next;
         } else {
@@ -25,23 +24,18 @@ public:
         current = current->next;
     }
     
-    if (l1) {
-        current->next = l1;
-    } else {
-        current->next = l2;
-    }
+    current->next = l1 ? l1 : l2;
     
     return dummy->next;
 }
     ListNode* mergeKLists(vector<ListNode*>& lists) {
         int n = lists.size();
-        if(n==0) return NULL; 
-        while (n > 1) {
-            for (int i = 0; i < n / 2; ++i) {
-                lists[i] = mergeTwoLists(lists[i], lists[n - 1 - i]);
-            }
-            n = (n + 1) / 2;
+        if(n==0) return NULL;
+        ListNode * curr = lists[0];
+        
+        for(int i = 1 ; i< lists.size() ;i++) {
+            curr = mergeTwoLists(curr, lists[i]);
         }
-        return lists[0];
+        return curr;
     }
 };
